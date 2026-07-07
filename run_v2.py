@@ -1,3 +1,6 @@
+
+from app.repair_engine.engine import run_seo_repair_workflow
+
 from app.dashboard.summary import show_summary
 from app.dashboard.stats import show_stats
 
@@ -77,7 +80,7 @@ def menu():
     while True:
         print()
         print("=" * 60)
-        print("203local Data Engine v3.0")
+        print("203local Data Engine v3.1")
         print("=" * 60)
         print("1. Dashboard")
         print("1A. Detailed Stats Dashboard")
@@ -109,7 +112,8 @@ def menu():
         print("27. Data Quality Audit")
         print("28. County Auto-Fix Preview")
         print("29. Apply County Auto-Fix")
-        print("30. Exit")
+        print("30. SEO Auto-Fix")
+        print("31. Exit")
         print()
 
         choice = input("Select an option: ").strip()
@@ -175,6 +179,8 @@ def menu():
         elif choice == "29":
             apply_county_fixes()
         elif choice == "30":
+            run_seo_repair_workflow()
+        elif choice == "31":
             print("Goodbye.")
             break
         else:
