@@ -1,6 +1,7 @@
 from app.dashboard.summary import show_summary
 from app.jobs.website_discovery.interactive import run as run_website_discovery
 from app.jobs.website_discovery.batch_manager import show_batches, find_current_batch
+from app.jobs.website_discovery.merge_preview import show_merge_preview
 
 
 def continue_website_discovery():
@@ -28,7 +29,8 @@ def menu():
         print("2. Continue Website Discovery")
         print("3. Interactive Website Discovery")
         print("4. Website Batch Manager")
-        print("5. Exit")
+        print("5. Website Merge Preview")
+        print("6. Exit")
         print()
 
         choice = input("Select an option: ").strip()
@@ -42,6 +44,8 @@ def menu():
         elif choice == "4":
             show_batches()
         elif choice == "5":
+            show_merge_preview()
+        elif choice == "6":
             print("Goodbye.")
             break
         else:
