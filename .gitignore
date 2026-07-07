@@ -1,0 +1,16 @@
+master/
+backups/
+exports/
+reports/
+logs/
+cache/
+archive/
+*.xlsx
+*.csv
+*.xls
+*.xlsm
+.DS_Store
+__pycache__/
+*.pyc
+.env
+credentials.json
