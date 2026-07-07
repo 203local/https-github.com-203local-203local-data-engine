@@ -1,12 +1,17 @@
-203local Data Engine v0.4
+# 203local Data Engine v0.6 Safe Save
 
-This update includes:
+Includes:
 - Dashboard
-- Dynamic Validator
-- Website CSV Export
-- Change Log framework
+- Master Loader
+- Backups
+- Validator
+- Website Export
+- Field Dictionary Loader
+- Change Log
+- County Auto-Fill
+- Safe Save utility
 
-Copy these files into your existing project folder and allow them to replace older files.
-Then run:
-
-python3 main.py
+Required:
+- master/203local_Master_Directory.xlsx
+- taxonomy/field_dictionary.xlsx
+- reference/ct_towns.csv
