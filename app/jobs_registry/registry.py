@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Callable, List
+from typing import Callable, List, Optional
 
 
 @dataclass
@@ -9,6 +9,8 @@ class Job:
     category: str
     function: Callable
     description: str = ""
+    estimated_runtime: str = ""
+    enabled: bool = True
 
 
 JOBS: List[Job] = []
@@ -18,8 +20,11 @@ def register_job(job: Job):
     JOBS.append(job)
 
 
-def get_jobs():
-    return JOBS
+def get_jobs(include_disabled=False):
+    if include_disabled:
+        return JOBS
+
+    return [job for job in JOBS if job.enabled]
 
 
 def get_job_by_id(job_id):
