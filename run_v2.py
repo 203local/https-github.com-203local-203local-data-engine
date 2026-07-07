@@ -1,3 +1,4 @@
+from app.repair_engine.pipeline import run_repair_pipeline
 
 from app.repair_engine.engine import run_seo_repair_workflow
 
@@ -113,7 +114,8 @@ def menu():
         print("28. County Auto-Fix Preview")
         print("29. Apply County Auto-Fix")
         print("30. SEO Auto-Fix")
-        print("31. Exit")
+        print("31. Full Repair Pipeline")
+        print("32. Exit")
         print()
 
         choice = input("Select an option: ").strip()
@@ -181,6 +183,8 @@ def menu():
         elif choice == "30":
             run_seo_repair_workflow()
         elif choice == "31":
+            run_repair_pipeline()
+        elif choice == "32":
             print("Goodbye.")
             break
         else:
