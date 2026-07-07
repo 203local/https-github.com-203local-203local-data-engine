@@ -6,6 +6,7 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT))
 
 from app.ai.business_client import generate_business_intelligence
+from app.business_intelligence.normalizer import normalize_business_result
 from app.business_intelligence.config import BATCH_FOLDER, RESULTS_FOLDER
 
 
@@ -37,6 +38,7 @@ def run(limit=5):
         print("Enriching:", row["post_title"])
 
         result = generate_business_intelligence(row.to_dict())
+        result = normalize_business_result(result)
 
         output = row.to_dict()
 
