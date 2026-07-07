@@ -7,6 +7,7 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT))
 
 from app.ai.restaurant_client import generate_restaurant_intelligence
+from app.restaurant_intelligence.normalizer import normalize_restaurant_result
 from app.restaurant_intelligence.config import RESULTS_FOLDER
 from app.restaurant_intelligence.config import BATCH_FOLDER
 
@@ -67,6 +68,7 @@ def run(limit=5):
         print("Enriching:", row.get("post_title", ""))
 
         result = generate_restaurant_intelligence(row.to_dict())
+        result = normalize_restaurant_result(result)
 
         for key, value in result.items():
             if key in {"business_input", "reason", "source_url"}:
