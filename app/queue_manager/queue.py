@@ -1,5 +1,6 @@
 from pathlib import Path
 
+from app.queue_manager.config import QUEUES
 from app.queue_manager.state import load_state
 
 
@@ -23,7 +24,16 @@ def get_completed_batches(queue_name):
     }
 
 
-def get_next_batch(queue_name, batch_folder, pattern):
+def get_next_batch(queue_name, batch_folder=None, pattern=None):
+    if batch_folder is None or pattern is None:
+        config = QUEUES.get(queue_name)
+
+        if config is None:
+            return None
+
+        batch_folder = config["folder"]
+        pattern = config["pattern"]
+
     batch_files = get_batch_files(batch_folder, pattern)
     completed = get_completed_batches(queue_name)
 
@@ -34,16 +44,19 @@ def get_next_batch(queue_name, batch_folder, pattern):
     return None
 
 
+def show_next_batches():
+    print("=" * 70)
+    print("Queue Manager - Next Batches")
+    print("=" * 70)
+
+    for queue_name in sorted(QUEUES.keys()):
+        next_batch = get_next_batch(queue_name)
+
+        if next_batch:
+            print(f"{queue_name}: {next_batch.name}")
+        else:
+            print(f"{queue_name}: No unfinished batches found.")
+
+
 if __name__ == "__main__":
-    from app.ai_enrichment.config import BATCH_FOLDER as AI_BATCH_FOLDER
-
-    next_batch = get_next_batch(
-        "ai_enrichment",
-        AI_BATCH_FOLDER,
-        "ai_batch_*.csv",
-    )
-
-    if next_batch:
-        print("Next batch:", next_batch.name)
-    else:
-        print("No unfinished batches found.")
+    show_next_batches()
