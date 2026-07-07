@@ -1,22 +1,21 @@
-from app.ai.webpage import extract_text
-
 import json
+import os
+
+from openai import OpenAI
+
 from app.ai.prompts import AI_ENRICHMENT_PROMPT
 from app.ai.models import business_record_to_text
+from app.ai.webpage import extract_text
+
+
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 
 def generate_ai_enrichment(record):
-    """
-    Placeholder AI client.
-
-    This returns structured draft data without calling an external AI API yet.
-    Later, this function will call OpenAI or another provider.
-    """
-
     business_text = business_record_to_text(record)
 
     website = record.get("website", "")
-    website_text = extract_text(website)
+    website_text = extract_text(website, max_chars=7000)
 
     combined_input = f"""
 DIRECTORY RECORD
@@ -28,32 +27,49 @@ WEBSITE CONTENT
 {website_text}
 """
 
-    name = record.get("post_title", "")
-    town = record.get("town", "")
-    category = record.get("primary_category", "") or record.get("primary_business_type", "")
+    try:
+        response = client.responses.create(
+            model="gpt-4.1-mini",
+            input=[
+                {
+                    "role": "system",
+                    "content": AI_ENRICHMENT_PROMPT,
+                },
+                {
+                    "role": "user",
+                    "content": combined_input,
+                },
+            ],
+            text={
+                "format": {
+                    "type": "json_object"
+                }
+            },
+        )
 
-    post_content = f"{name} is a local business in {town}."
-    if category and str(category).strip().lower() != "nan":
-        post_content += f" It is listed under {category}."
+        content = response.output_text
+        result = json.loads(content)
 
-    result = {
-        "post_content": post_content,
-        "seo_directory_title": f"{name} | {town} CT | 203local",
-        "seo_meta_description": f"Find information about {name} in {town}, CT on 203local.",
-        "searchable_keywords": f"{name}, {town}, CT, {category}",
-        "confidence": "Low",
-        "reason": "Placeholder AI enrichment generated from existing directory fields only.",
-        "prompt_used": AI_ENRICHMENT_PROMPT.strip(),
-        "business_input": combined_input,
-    }
+    except Exception as e:
+        result = {
+            "post_content": "",
+            "seo_directory_title": "",
+            "seo_meta_description": "",
+            "searchable_keywords": "",
+            "confidence": "Failed",
+            "reason": f"AI API error: {e}",
+        }
+
+    result["business_input"] = combined_input
+    result["prompt_used"] = AI_ENRICHMENT_PROMPT.strip()
 
     return result
 
 
 if __name__ == "__main__":
     sample = {
-        "post_title": "Sample Restaurant",
-        "town": "Fairfield",
+        "post_title": "Los Alebrijes",
+        "town": "Bridgeport",
         "primary_category": "Restaurant",
         "website": "https://losalebrijesct.com",
     }
