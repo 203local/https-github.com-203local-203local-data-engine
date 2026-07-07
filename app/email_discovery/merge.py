@@ -108,7 +108,11 @@ def merge_emails():
             "reason": "Merged successfully",
         })
 
-    master.to_excel(MASTER_FILE, index=False)
+    if merged_count > 0:
+        master.to_excel(MASTER_FILE, index=False)
+    else:
+        print("No valid emails merged, so Master Directory was not modified.")
+
     pd.DataFrame(report_rows).to_csv(report_file, index=False)
 
     print("=" * 70)
