@@ -14,3 +14,6 @@ __pycache__/
 *.pyc
 .env
 credentials.json
+automation_state/
+queue_state/
+queue_state/
