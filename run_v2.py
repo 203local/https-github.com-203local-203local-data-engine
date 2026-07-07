@@ -38,6 +38,10 @@ from app.automation_engine.runner import show_menu as show_automation_engine
 from app.automation_engine.chain_runner import show_menu as show_chain_runner
 from app.playbooks.runner import show_menu as show_playbooks
 
+from app.data_quality.audit import run_audit
+from app.auto_fix.county_fix import preview_county_fixes
+from app.auto_fix.apply import apply_county_fixes
+
 
 def continue_website_discovery():
     batch = find_current_website_batch()
@@ -102,7 +106,10 @@ def menu():
         print("24. Automation Engine")
         print("25. Automation Chain Runner")
         print("26. Playbooks")
-        print("27. Exit")
+        print("27. Data Quality Audit")
+        print("28. County Auto-Fix Preview")
+        print("29. Apply County Auto-Fix")
+        print("30. Exit")
         print()
 
         choice = input("Select an option: ").strip()
@@ -162,6 +169,12 @@ def menu():
         elif choice == "26":
             show_playbooks()
         elif choice == "27":
+            run_audit()
+        elif choice == "28":
+            preview_county_fixes()
+        elif choice == "29":
+            apply_county_fixes()
+        elif choice == "30":
             print("Goodbye.")
             break
         else:
