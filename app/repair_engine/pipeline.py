@@ -1,9 +1,12 @@
 from app.core.workbook import load_master_dataframe, save_report_workbook
+
 from app.repair_engine.seo.repair import SEORepair
+from app.repair_engine.description.repair import DescriptionRepair
 
 
 PIPELINE = [
     SEORepair(),
+    DescriptionRepair(),
 ]
 
 
@@ -32,7 +35,16 @@ def run_repair_pipeline():
         suffix="repair_pipeline",
     )
 
-    print("\n=== Repair Pipeline Complete ===")
-    print(f"Modules run: {len(reports)}")
-    print("Saved repaired file to:")
-    print(output_path)
+    print("\n====================================")
+    print("Repair Pipeline Complete")
+    print("====================================")
+
+    for report in reports:
+        print(
+            f"{report.module_name}: "
+            f"Repaired {report.repaired}, "
+            f"Skipped {report.skipped}, "
+            f"Failed {report.failed}"
+        )
+
+    print(f"\nSaved repaired file to:\n{output_path}")
