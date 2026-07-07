@@ -7,6 +7,8 @@ sys.path.insert(0, str(ROOT))
 from app.automation_engine.config import DEFAULT_JOB_LIMIT
 from app.automation_engine.jobs import list_jobs, get_job
 from app.automation_engine.state import record_run
+from app.queue_manager.queue import get_next_batch
+from app.queue_manager.state import update_queue_status
 
 
 def run_job(job_name, limit=DEFAULT_JOB_LIMIT):
@@ -23,12 +25,26 @@ def run_job(job_name, limit=DEFAULT_JOB_LIMIT):
     print("Running job:", job_name)
     print("Limit:", limit)
 
+    next_batch = get_next_batch(job_name)
+    batch_name = next_batch.name if next_batch else "unknown"
+
+    if next_batch:
+        print("Queue batch:", batch_name)
+        update_queue_status(job_name, batch_name, "In Progress", {"limit": limit})
+
     try:
         job(limit=limit)
-        record_run(job_name, "Complete", {"limit": limit})
+
+        if next_batch:
+            update_queue_status(job_name, batch_name, "Complete", {"limit": limit})
+
+        record_run(job_name, "Complete", {"limit": limit, "batch": batch_name})
         print("✓ Job complete")
     except Exception as e:
-        record_run(job_name, "Failed", {"error": str(e)})
+        if next_batch:
+            update_queue_status(job_name, batch_name, "Failed", {"limit": limit, "error": str(e)})
+
+        record_run(job_name, "Failed", {"limit": limit, "batch": batch_name, "error": str(e)})
         print("✗ Job failed:", e)
 
 
