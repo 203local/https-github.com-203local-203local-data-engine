@@ -9,6 +9,7 @@ NEIGHBORHOOD = "neighborhood"
 STREET = "street"
 
 PHONE = "phone"
+WEBSITE_SEARCH_URL = "website_search_url"
 WEBSITE = "website"
 EMAIL = "email"
 
