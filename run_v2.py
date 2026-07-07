@@ -71,7 +71,7 @@ def menu():
     while True:
         print()
         print("=" * 60)
-        print("203local Data Engine v2.2")
+        print("203local Data Engine v3.0")
         print("=" * 60)
         print("1. Dashboard")
         print("1A. Detailed Stats Dashboard")
