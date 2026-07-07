@@ -9,6 +9,7 @@ from config import MASTER_FILE
 from app.data_quality.config import QUALITY_REPORT_FILE, REPORT_FOLDER
 from app.data_quality.rules import run_quality_rules
 from app.data_quality.scoring import score_record, quality_band
+from app.data_quality.report import generate_summary
 
 
 def run_audit():
@@ -43,6 +44,8 @@ def run_audit():
     print("Report:", QUALITY_REPORT_FILE)
     print()
     print(report["quality_band"].value_counts().to_string())
+    print()
+    generate_summary(QUALITY_REPORT_FILE)
 
 
 if __name__ == "__main__":
