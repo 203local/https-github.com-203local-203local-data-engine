@@ -2,6 +2,7 @@ from pathlib import Path
 import sys
 from datetime import datetime
 import shutil
+import os
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parent.parent.parent
@@ -26,12 +27,11 @@ def yes(value):
 
 def merge_emails():
     results_file = latest_results_file()
-
     if results_file is None:
         return
 
     master = pd.read_excel(MASTER_FILE)
-    results = pd.read_csv(results_file)
+    results = pd.read_csv(results_file, dtype=str)
 
     approved = results[results["ready_to_merge"].apply(yes)].copy()
 
@@ -46,13 +46,13 @@ def merge_emails():
 
     backup_file = BACKUP_FOLDER / f"203local_Master_Email_Merge_Backup_{timestamp}.xlsx"
     report_file = REPORT_FOLDER / f"Email_Merge_Report_{timestamp}.csv"
+    temp_file = MASTER_FILE.with_suffix(".tmp.xlsx")
 
     shutil.copy2(MASTER_FILE, backup_file)
 
     report_rows = []
     merged_count = 0
     skipped_count = 0
-
     master_ids = set(master["business_id"])
 
     for _, row in approved.iterrows():
@@ -108,12 +108,21 @@ def merge_emails():
             "reason": "Merged successfully",
         })
 
+    pd.DataFrame(report_rows).to_csv(report_file, index=False)
+
     if merged_count > 0:
-        master.to_excel(MASTER_FILE, index=False)
+        print("Writing updated master to temporary file...")
+        master.to_excel(temp_file, index=False)
+
+        print("Verifying temporary file...")
+        test = pd.read_excel(temp_file)
+        if len(test) != len(master):
+            raise RuntimeError("Temporary master verification failed. Row count mismatch.")
+
+        print("Replacing master file...")
+        os.replace(temp_file, MASTER_FILE)
     else:
         print("No valid emails merged, so Master Directory was not modified.")
-
-    pd.DataFrame(report_rows).to_csv(report_file, index=False)
 
     print("=" * 70)
     print("Email Merge Complete")
