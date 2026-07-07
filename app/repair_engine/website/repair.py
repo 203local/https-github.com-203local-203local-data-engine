@@ -1,5 +1,9 @@
 from app.repair_engine.base import RepairModule
+from app.repair_engine.adapters.website_search import build_google_search_url
 from app.schema import fields
+
+
+WEBSITE_SEARCH_URL = "website_search_url"
 
 
 class WebsiteRepair(RepairModule):
@@ -18,16 +22,24 @@ class WebsiteRepair(RepairModule):
         if fields.WEBSITE not in df.columns:
             df[fields.WEBSITE] = ""
 
-        for _, row in df.iterrows():
+        if WEBSITE_SEARCH_URL not in df.columns:
+            df[WEBSITE_SEARCH_URL] = ""
+
+        for index, row in df.iterrows():
             website = self.clean_text(row.get(fields.WEBSITE))
+            name = self.clean_text(row.get(fields.POST_TITLE))
+            town = self.clean_text(row.get(fields.TOWN))
 
             if website:
                 report.skipped += 1
                 continue
 
-            # Placeholder for real recovery logic.
-            # Next step will connect this to the DiscoveryAdapter.
-            report.skipped += 1
+            if not name:
+                report.skipped += 1
+                continue
+
+            df.at[index, WEBSITE_SEARCH_URL] = build_google_search_url(name, town)
+            report.repaired += 1
 
         return df, report
 
