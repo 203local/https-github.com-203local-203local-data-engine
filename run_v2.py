@@ -17,6 +17,12 @@ from app.email_discovery.merge import merge_emails
 from app.email_discovery.auto_discover import run as run_auto_email_discovery
 from app.email_discovery.review_suggestions import review_suggestions
 
+from app.ai_enrichment.batch_manager import show_batches as show_ai_batches
+from app.ai_enrichment.auto_enrich import run as run_ai_auto_enrich
+from app.ai_enrichment.review_suggestions import review_suggestions as review_ai_suggestions
+from app.ai_enrichment.merge_preview import show_merge_preview as show_ai_merge_preview
+from app.ai_enrichment.merge import merge_ai_enrichment
+
 
 def continue_website_discovery():
     batch = find_current_website_batch()
@@ -64,7 +70,12 @@ def menu():
         print("8. Review Email Suggestions")
         print("9. Email Merge Preview")
         print("10. Email Merge Manager")
-        print("11. Exit")
+        print("11. AI Batch Manager")
+        print("12. Auto AI Enrichment")
+        print("13. Review AI Suggestions")
+        print("14. AI Merge Preview")
+        print("15. AI Merge Manager")
+        print("16. Exit")
         print()
 
         choice = input("Select an option: ").strip()
@@ -90,6 +101,16 @@ def menu():
         elif choice == "10":
             merge_emails()
         elif choice == "11":
+            show_ai_batches()
+        elif choice == "12":
+            run_ai_auto_enrich()
+        elif choice == "13":
+            review_ai_suggestions()
+        elif choice == "14":
+            show_ai_merge_preview()
+        elif choice == "15":
+            merge_ai_enrichment()
+        elif choice == "16":
             print("Goodbye.")
             break
         else:
