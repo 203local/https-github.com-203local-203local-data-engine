@@ -41,3 +41,20 @@
 - Website export
 - CMS integration
 - Reporting
+
+## Sprint 2 – Website Completion
+
+Goal:
+Reduce missing websites from 1,428 to under 1,000.
+
+Features:
+- Batch Manager
+- Resume previous batch
+- Progress dashboard
+- Merge preview
+- Improved interactive discovery
+
+Success Metrics:
+- 400+ verified websites added
+- Merge accuracy >99%
+- Zero data loss
