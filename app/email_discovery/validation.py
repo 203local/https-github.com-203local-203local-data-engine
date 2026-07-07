@@ -8,6 +8,21 @@ INVALID_PLACEHOLDERS = {
     "email@example.com",
 }
 
+BLOCKED_DOMAINS = {
+    "sentry.io",
+    "wixpress.com",
+    "google.com",
+}
+
+BLOCKED_KEYWORDS = {
+    "sentry",
+    "ingest",
+    "noreply",
+    "no-reply",
+    "donotreply",
+    "do-not-reply",
+}
+
 EMAIL_PATTERN = re.compile(r"^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$", re.I)
 
 
@@ -25,5 +40,13 @@ def is_valid_email(email):
 
     if not EMAIL_PATTERN.match(email):
         return False, "Invalid email format"
+
+    local, domain = email.split("@", 1)
+
+    if domain in BLOCKED_DOMAINS or any(domain.endswith("." + d) for d in BLOCKED_DOMAINS):
+        return False, "Blocked technical/domain email"
+
+    if any(keyword in email for keyword in BLOCKED_KEYWORDS):
+        return False, "Blocked technical email"
 
     return True, "Valid"
