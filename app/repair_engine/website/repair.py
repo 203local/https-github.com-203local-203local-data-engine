@@ -3,9 +3,6 @@ from app.repair_engine.adapters.website_search import build_google_search_url
 from app.schema import fields
 
 
-WEBSITE_SEARCH_URL = "website_search_url"
-
-
 class WebsiteRepair(RepairModule):
     module_name = "Website"
 
@@ -22,8 +19,8 @@ class WebsiteRepair(RepairModule):
         if fields.WEBSITE not in df.columns:
             df[fields.WEBSITE] = ""
 
-        if WEBSITE_SEARCH_URL not in df.columns:
-            df[WEBSITE_SEARCH_URL] = ""
+        if fields.WEBSITE_SEARCH_URL not in df.columns:
+            df[fields.WEBSITE_SEARCH_URL] = ""
 
         for index, row in df.iterrows():
             website = self.clean_text(row.get(fields.WEBSITE))
@@ -38,7 +35,7 @@ class WebsiteRepair(RepairModule):
                 report.skipped += 1
                 continue
 
-            df.at[index, WEBSITE_SEARCH_URL] = build_google_search_url(name, town)
+            df.at[index, fields.WEBSITE_SEARCH_URL] = build_google_search_url(name, town)
             report.repaired += 1
 
         return df, report
