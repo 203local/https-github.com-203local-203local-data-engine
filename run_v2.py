@@ -35,6 +35,7 @@ from app.business_intelligence.merge_preview import show_merge_preview as show_b
 from app.business_intelligence.merge import merge_business_intelligence
 
 from app.automation_engine.runner import show_menu as show_automation_engine
+from app.automation_engine.chain_runner import show_menu as show_chain_runner
 from app.playbooks.runner import show_menu as show_playbooks
 
 
@@ -99,8 +100,9 @@ def menu():
         print("22. Business Intelligence Merge Preview")
         print("23. Business Intelligence Merge Manager")
         print("24. Automation Engine")
-        print("25. Playbooks")
-        print("26. Exit")
+        print("25. Automation Chain Runner")
+        print("26. Playbooks")
+        print("27. Exit")
         print()
 
         choice = input("Select an option: ").strip()
@@ -156,8 +158,10 @@ def menu():
         elif choice == "24":
             show_automation_engine()
         elif choice == "25":
-            show_playbooks()
+            show_chain_runner()
         elif choice == "26":
+            show_playbooks()
+        elif choice == "27":
             print("Goodbye.")
             break
         else:
