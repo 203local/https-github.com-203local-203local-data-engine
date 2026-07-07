@@ -24,3 +24,6 @@ REQUIRED_COLUMNS = [
     "primary_category",
     "primary_business_type",
 ]
+
+TEMP_FOLDER = ROOT / "cache"
+
