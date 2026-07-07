@@ -1,5 +1,4 @@
 from datetime import datetime
-from pathlib import Path
 import re
 
 def timestamp():
@@ -8,10 +7,13 @@ def timestamp():
 def normalize_text(value):
     if value is None:
         return ""
-    return str(value).strip()
+    value = str(value).strip()
+    if value.lower() in {"nan", "none", "null"}:
+        return ""
+    return value
 
 def is_blank(value):
-    return normalize_text(value) == "" or normalize_text(value).lower() in {"nan", "none"}
+    return normalize_text(value) == ""
 
 def looks_like_email(value):
     value = normalize_text(value).lower()
@@ -27,3 +29,6 @@ def looks_like_url(value):
 
 def normalize_key(value):
     return re.sub(r"[^a-z0-9]+", "", normalize_text(value).lower())
+
+def yes(value):
+    return normalize_text(value).lower() in {"yes", "y", "true", "1", "x"}

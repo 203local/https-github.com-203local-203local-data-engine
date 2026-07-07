@@ -1,24 +1,12 @@
-# 203local Data Engine v0.2
+203local Data Engine v0.4
 
-## First setup
+This update includes:
+- Dashboard
+- Dynamic Validator
+- Website CSV Export
+- Change Log framework
 
-Put your master spreadsheet in:
+Copy these files into your existing project folder and allow them to replace older files.
+Then run:
 
-`master/203local_Master_Directory.xlsx`
-
-## Run the app
-
-```bash
 python3 main.py
-```
-
-Choose:
-
-1. Load + Backup Master
-2. Validate Master Spreadsheet
-
-## Validator output
-
-Validation reports are saved in:
-
-`reports/`
