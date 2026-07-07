@@ -14,6 +14,8 @@ from app.email_discovery.batch_manager import (
 )
 from app.email_discovery.merge_preview import show_merge_preview as show_email_merge_preview
 from app.email_discovery.merge import merge_emails
+from app.email_discovery.auto_discover import run as run_auto_email_discovery
+from app.email_discovery.review_suggestions import review_suggestions
 
 
 def continue_website_discovery():
@@ -58,9 +60,11 @@ def menu():
         print("4. Website Merge Preview")
         print("5. Continue Email Discovery")
         print("6. Email Batch Manager")
-        print("7. Email Merge Preview")
-        print("8. Email Merge Manager")
-        print("9. Exit")
+        print("7. Auto Email Discovery")
+        print("8. Review Email Suggestions")
+        print("9. Email Merge Preview")
+        print("10. Email Merge Manager")
+        print("11. Exit")
         print()
 
         choice = input("Select an option: ").strip()
@@ -78,10 +82,14 @@ def menu():
         elif choice == "6":
             show_email_batches()
         elif choice == "7":
-            show_email_merge_preview()
+            run_auto_email_discovery()
         elif choice == "8":
-            merge_emails()
+            review_suggestions()
         elif choice == "9":
+            show_email_merge_preview()
+        elif choice == "10":
+            merge_emails()
+        elif choice == "11":
             print("Goodbye.")
             break
         else:
