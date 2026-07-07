@@ -49,7 +49,9 @@ def load_master_dataframe():
 def save_report_workbook(df, source_path, suffix):
     REPORTS_DIR.mkdir(exist_ok=True)
 
-    output_path = REPORTS_DIR / f"{source_path.stem}_{suffix}.xlsx"
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    output_path = REPORTS_DIR / f"{source_path.stem}_{suffix}_{timestamp}.xlsx"
+
     df.to_excel(output_path, index=False)
 
     return output_path
