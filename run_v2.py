@@ -34,6 +34,8 @@ from app.business_intelligence.review_suggestions import review_suggestions as r
 from app.business_intelligence.merge_preview import show_merge_preview as show_business_intelligence_preview
 from app.business_intelligence.merge import merge_business_intelligence
 
+from app.automation_engine.runner import show_menu as show_automation_engine
+
 
 def continue_website_discovery():
     batch = find_current_website_batch()
@@ -95,7 +97,8 @@ def menu():
         print("21. Review Business Intelligence")
         print("22. Business Intelligence Merge Preview")
         print("23. Business Intelligence Merge Manager")
-        print("24. Exit")
+        print("24. Automation Engine")
+        print("25. Exit")
         print()
 
         choice = input("Select an option: ").strip()
@@ -149,6 +152,8 @@ def menu():
         elif choice == "23":
             merge_business_intelligence()
         elif choice == "24":
+            show_automation_engine()
+        elif choice == "25":
             print("Goodbye.")
             break
         else:
