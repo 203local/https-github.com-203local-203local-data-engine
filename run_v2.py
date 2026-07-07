@@ -1,4 +1,5 @@
 from app.dashboard.summary import show_summary
+from app.dashboard.stats import show_stats
 
 from app.jobs.website_discovery.interactive import run as run_website_discovery
 from app.jobs.website_discovery.batch_manager import (
@@ -66,6 +67,7 @@ def menu():
         print("203local Data Engine v2.2")
         print("=" * 60)
         print("1. Dashboard")
+        print("1A. Detailed Stats Dashboard")
         print("2. Continue Website Discovery")
         print("3. Website Batch Manager")
         print("4. Website Merge Preview")
@@ -91,6 +93,8 @@ def menu():
 
         if choice == "1":
             show_summary()
+        elif choice.lower() == "1a":
+            show_stats()
         elif choice == "2":
             continue_website_discovery()
         elif choice == "3":
