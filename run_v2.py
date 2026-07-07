@@ -23,6 +23,11 @@ from app.ai_enrichment.review_suggestions import review_suggestions as review_ai
 from app.ai_enrichment.merge_preview import show_merge_preview as show_ai_merge_preview
 from app.ai_enrichment.merge import merge_ai_enrichment
 
+from app.restaurant_intelligence.auto_enrich import run as run_restaurant_intelligence
+from app.restaurant_intelligence.review_suggestions import review_suggestions as review_restaurant_intelligence
+from app.restaurant_intelligence.merge_preview import show_merge_preview as show_restaurant_intelligence_preview
+from app.restaurant_intelligence.merge import merge_restaurant_intelligence
+
 
 def continue_website_discovery():
     batch = find_current_website_batch()
@@ -75,7 +80,11 @@ def menu():
         print("13. Review AI Suggestions")
         print("14. AI Merge Preview")
         print("15. AI Merge Manager")
-        print("16. Exit")
+        print("16. Restaurant Intelligence Auto Enrichment")
+        print("17. Review Restaurant Intelligence")
+        print("18. Restaurant Intelligence Merge Preview")
+        print("19. Restaurant Intelligence Merge Manager")
+        print("20. Exit")
         print()
 
         choice = input("Select an option: ").strip()
@@ -111,6 +120,14 @@ def menu():
         elif choice == "15":
             merge_ai_enrichment()
         elif choice == "16":
+            run_restaurant_intelligence()
+        elif choice == "17":
+            review_restaurant_intelligence()
+        elif choice == "18":
+            show_restaurant_intelligence_preview()
+        elif choice == "19":
+            merge_restaurant_intelligence()
+        elif choice == "20":
             print("Goodbye.")
             break
         else:
