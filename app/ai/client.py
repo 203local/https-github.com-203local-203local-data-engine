@@ -1,3 +1,5 @@
+from app.ai.webpage import extract_text
+
 import json
 from app.ai.prompts import AI_ENRICHMENT_PROMPT
 from app.ai.models import business_record_to_text
@@ -10,7 +12,21 @@ def generate_ai_enrichment(record):
     This returns structured draft data without calling an external AI API yet.
     Later, this function will call OpenAI or another provider.
     """
+
     business_text = business_record_to_text(record)
+
+    website = record.get("website", "")
+    website_text = extract_text(website)
+
+    combined_input = f"""
+DIRECTORY RECORD
+----------------
+{business_text}
+
+WEBSITE CONTENT
+---------------
+{website_text}
+"""
 
     name = record.get("post_title", "")
     town = record.get("town", "")
@@ -28,7 +44,7 @@ def generate_ai_enrichment(record):
         "confidence": "Low",
         "reason": "Placeholder AI enrichment generated from existing directory fields only.",
         "prompt_used": AI_ENRICHMENT_PROMPT.strip(),
-        "business_input": business_text,
+        "business_input": combined_input,
     }
 
     return result
@@ -39,6 +55,7 @@ if __name__ == "__main__":
         "post_title": "Sample Restaurant",
         "town": "Fairfield",
         "primary_category": "Restaurant",
+        "website": "https://losalebrijesct.com",
     }
 
     print(json.dumps(generate_ai_enrichment(sample), indent=2))
