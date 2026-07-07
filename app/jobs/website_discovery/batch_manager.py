@@ -66,3 +66,18 @@ def show_batches():
 
 if __name__ == "__main__":
     show_batches()
+
+    def find_current_batch():
+    batches = sorted(BATCH_FOLDER.glob("website_batch_*.csv"))
+
+    for batch in batches:
+        status = batch_status(batch)
+        if status["status"] == "In Progress":
+            return batch
+
+    for batch in batches:
+        status = batch_status(batch)
+        if status["status"] == "Not Started":
+            return batch
+
+    return None
