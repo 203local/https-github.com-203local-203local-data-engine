@@ -1,3 +1,5 @@
+from app.repair_engine.website.repair import WebsiteRepair
+
 from app.core.workbook import load_master_dataframe, save_report_workbook
 
 from app.repair_engine.seo.repair import SEORepair
@@ -7,8 +9,8 @@ from app.repair_engine.description.repair import DescriptionRepair
 PIPELINE = [
     SEORepair(),
     DescriptionRepair(),
+    WebsiteRepair(),
 ]
-
 
 def run_repair_pipeline():
     print("\n=== Full Repair Pipeline ===")
