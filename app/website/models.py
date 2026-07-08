@@ -1,10 +1,11 @@
 from dataclasses import dataclass
+from typing import Optional
 
 
 @dataclass
 class WebsiteData:
-    website: str | None = None
-    phone: str | None = None
-    email: str | None = None
-    facebook: str | None = None
-    instagram: str | None = None
+    website: Optional[str] = None
+    phone: Optional[str] = None
+    email: Optional[str] = None
+    facebook: Optional[str] = None
+    instagram: Optional[str] = None
