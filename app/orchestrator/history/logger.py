@@ -1,9 +1,10 @@
-from pathlib import Path
 from datetime import datetime
 import csv
 
+from app.config.settings import REPAIR_HISTORY_FILE
 
-HISTORY_FILE = Path("logs/repair_history.csv")
+
+HISTORY_FILE = REPAIR_HISTORY_FILE
 
 
 def log_repair(business_name, repair_step, status="planned"):
