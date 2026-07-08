@@ -2,6 +2,7 @@ from dataclasses import dataclass
 from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
 import socket
+import http.client
 
 
 @dataclass
@@ -29,7 +30,16 @@ def fetch_homepage(url):
                 html=html,
             )
 
-    except (HTTPError, URLError, TimeoutError, socket.timeout):
+    except (
+        HTTPError,
+        URLError,
+        TimeoutError,
+        socket.timeout,
+        http.client.IncompleteRead,
+        ConnectionResetError,
+        ConnectionAbortedError,
+        BrokenPipeError,
+    ):
         return ValidationResult(
             reachable=False,
             status_code=0,
