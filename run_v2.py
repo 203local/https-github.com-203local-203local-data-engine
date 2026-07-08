@@ -13,6 +13,7 @@ from app.orchestrator.batch import run as run_batch_orchestrator
 from app.merge.website_preview_runner import run as run_website_preview
 from app.orchestrator.enrichment_pipeline import run as run_enrichment_pipeline
 from app.orchestrator.history.state_report import run as run_enrichment_state_report
+from app.orchestrator.history.reset_state import run as run_enrichment_state_reset
 from app.repair_engine.engine import run_seo_repair_workflow
 
 from app.dashboard.summary import show_summary
@@ -142,7 +143,8 @@ def menu():
         print("42. Website Worker Preview")
         print("43. Enrichment Pipeline Preview")
         print("44. Enrichment State Report")
-        print("45. Exit")
+        print("45. Reset Enrichment State")
+        print("46. Exit")
         print()
 
         choice = input("Select an option: ").strip()
@@ -238,6 +240,8 @@ def menu():
         elif choice == "44":
             run_enrichment_state_report()
         elif choice == "45":
+            run_enrichment_state_reset()
+        elif choice == "46":
             print("Goodbye.")
             break
         else:
