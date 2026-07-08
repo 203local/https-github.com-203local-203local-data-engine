@@ -2,6 +2,7 @@ import json
 import os
 from urllib.parse import urlencode
 from urllib.request import urlopen
+from urllib.error import HTTPError, URLError
 
 from app.search.models import SearchResult
 from app.search.provider import SearchProvider
@@ -26,8 +27,17 @@ class GoogleCustomSearchProvider(SearchProvider):
 
         url = f"https://www.googleapis.com/customsearch/v1?{params}"
 
-        with urlopen(url, timeout=15) as response:
-            payload = json.loads(response.read().decode("utf-8"))
+        try:
+            with urlopen(url, timeout=15) as response:
+                payload = json.loads(response.read().decode("utf-8"))
+        except HTTPError as error:
+            body = error.read().decode("utf-8", errors="ignore")
+            print(f"Google Custom Search HTTP error {error.code}:")
+            print(body)
+            return []
+        except URLError as error:
+            print(f"Google Custom Search URL error: {error}")
+            return []
 
         results = []
 
