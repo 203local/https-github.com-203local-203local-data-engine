@@ -5,6 +5,7 @@ from app.merge.merge_engine import merge_updates
 from app.merge.apply_updates import apply_updates
 from app.orchestrator.queue import build_queue
 from app.workers.default_registry import registry
+from app.workers.safe_runner import run_worker
 
 
 def run(limit=25):
@@ -38,7 +39,12 @@ def run(limit=25):
         for worker in registry.runnable(row):
             print(f"  Running: {worker.name}")
 
-            result = worker.run(row)
+            result, error = run_worker(worker, row)
+
+            if error:
+                print(f"    ERROR: {error['error']}")
+                continue
+
             total_updates += len(result.updates)
 
             merge_result = merge_updates(row, result.updates)
