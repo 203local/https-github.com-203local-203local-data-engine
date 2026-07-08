@@ -3,9 +3,10 @@ import pandas as pd
 from app.core.workbook import find_master_workbook
 from app.orchestrator.executor import execute
 from app.orchestrator.queue import build_queue
+from app.config.settings import DEFAULT_BATCH_LIMIT
 
 
-def run(limit=25):
+def run(limit=DEFAULT_BATCH_LIMIT):
     workbook = find_master_workbook()
 
     if workbook is None:
