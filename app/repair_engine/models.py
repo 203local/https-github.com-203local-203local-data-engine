@@ -1,5 +1,7 @@
 from dataclasses import dataclass, field
 
+from app.core.job_result import JobResult
+
 
 @dataclass
 class RepairReport:
@@ -19,3 +21,14 @@ class RepairReport:
             print("\nWarnings:")
             for warning in self.warnings:
                 print(f"- {warning}")
+
+    def to_job_result(self):
+        result = JobResult(
+            name=f"{self.module_name} Repair",
+            repaired=self.repaired,
+            skipped=self.skipped,
+            failed=self.failed,
+            notes=self.warnings,
+        )
+        result.finish()
+        return result

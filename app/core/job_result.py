@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from datetime import datetime
+from typing import Optional
 
 
 @dataclass
@@ -11,9 +12,9 @@ class JobResult:
     failed: int = 0
 
     started_at: datetime = field(default_factory=datetime.now)
-    finished_at: datetime | None = None
+    finished_at: Optional[datetime] = None
 
-    notes: list[str] = field(default_factory=list)
+    notes: list = field(default_factory=list)
 
     def finish(self):
         self.finished_at = datetime.now()
