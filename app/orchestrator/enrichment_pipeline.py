@@ -6,6 +6,7 @@ from app.merge.apply_updates import apply_updates
 from app.orchestrator.queue import build_queue
 from app.workers.default_registry import registry
 from app.workers.safe_runner import run_worker
+from app.orchestrator.history.state_manager import save_state
 
 
 def run(limit=25):
@@ -61,6 +62,11 @@ def run(limit=25):
 
             print(f"    Accepted: {len(merge_result.accepted_updates)}")
             print(f"    Rejected: {len(merge_result.rejected_updates)}")
+
+        save_state(
+            last_business_id=business_id,
+            completed=i,
+        )
 
     output_path = save_report_workbook(
         df=df,
