@@ -7,6 +7,7 @@ from app.orchestrator.queue import build_queue
 from app.workers.default_registry import registry
 from app.workers.safe_runner import run_worker
 from app.orchestrator.history.state_manager import save_state
+from app.orchestrator.history.error_logger import log_error
 
 
 def run(limit=25):
@@ -44,6 +45,7 @@ def run(limit=25):
 
             if error:
                 print(f"    ERROR: {error['error']}")
+                log_error(error)
                 continue
 
             total_updates += len(result.updates)
