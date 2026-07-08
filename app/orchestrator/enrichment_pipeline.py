@@ -6,7 +6,7 @@ from app.merge.apply_updates import apply_updates
 from app.orchestrator.queue import build_queue
 from app.workers.default_registry import registry
 from app.workers.safe_runner import run_worker
-from app.orchestrator.history.state_manager import save_state
+from app.orchestrator.history.state_manager import load_state, save_state
 from app.orchestrator.history.error_logger import log_error
 
 
@@ -18,7 +18,19 @@ def run(limit=25):
         return
 
     df = pd.read_excel(workbook)
-    queue = build_queue(df).head(limit)
+    queue = build_queue(df)
+
+    state = load_state()
+    last_business_id = state.get("last_business_id")
+
+    if last_business_id is not None and "business_id" in queue.columns:
+        matches = queue.index[queue["business_id"] == last_business_id].tolist()
+
+        if matches:
+            resume_index = matches[0] + 1
+            queue = queue.iloc[resume_index:]
+
+    queue = queue.head(limit)
 
     total_updates = 0
     accepted = 0
@@ -30,6 +42,7 @@ def run(limit=25):
     print("203local Enrichment Pipeline")
     print("=" * 70)
     print(f"Businesses selected: {len(queue)}")
+    print(f"Resuming after: {last_business_id}")
 
     for i, (_, row) in enumerate(queue.iterrows(), start=1):
         print()
