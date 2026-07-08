@@ -3,6 +3,7 @@ from app.repair_engine.pipeline import run_repair_pipeline
 from app.repair_engine.engine import run_seo_repair_workflow
 
 from app.dashboard.summary import show_summary
+from app.dashboard.missing_data import run as show_missing_data
 from app.dashboard.stats import show_stats
 
 from app.jobs.website_discovery.interactive import run as run_website_discovery
@@ -115,7 +116,8 @@ def menu():
         print("29. Apply County Auto-Fix")
         print("30. SEO Auto-Fix")
         print("31. Full Repair Pipeline")
-        print("32. Exit")
+        print("32. Missing Data Dashboard")
+        print("33. Exit")
         print()
 
         choice = input("Select an option: ").strip()
@@ -185,6 +187,8 @@ def menu():
         elif choice == "31":
             run_repair_pipeline()
         elif choice == "32":
+            show_missing_data()
+        elif choice == "33":
             print("Goodbye.")
             break
         else:
