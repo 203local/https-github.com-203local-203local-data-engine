@@ -10,18 +10,20 @@ def run():
         print("No master workbook found.")
         return
 
-    print(f"\nUsing: {workbook}\n")
-
     df = pd.read_excel(workbook)
 
     total = len(df)
 
-    print("=" * 75)
-    print(f'{"Field":35} {"Missing":>10} {"Complete":>10} {"% Complete":>12}')
-    print("=" * 75)
+    print()
+    print("=" * 70)
+    print("203local Missing Data Dashboard")
+    print("=" * 70)
+    print(f"Businesses: {total:,}")
+    print()
+
+    results = []
 
     for column in df.columns:
-
         missing = (
             df[column]
             .fillna("")
@@ -34,11 +36,25 @@ def run():
         complete = total - missing
         percent = (complete / total) * 100 if total else 0
 
-        print(
-            f"{column[:35]:35}"
-            f"{missing:>10}"
-            f"{complete:>10}"
-            f"{percent:>11.1f}%"
+        results.append(
+            {
+                "field": column,
+                "missing": missing,
+                "complete": complete,
+                "percent": percent,
+            }
         )
 
-    print("=" * 75)
+    results.sort(key=lambda r: r["missing"], reverse=True)
+
+    print("Top 15 Fields Needing Attention")
+    print("-" * 70)
+
+    for row in results[:15]:
+        print(
+            f"{row['field'][:35]:35}"
+            f"{row['missing']:>8} missing"
+            f"   {row['percent']:6.1f}% complete"
+        )
+
+    print("-" * 70)
