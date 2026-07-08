@@ -7,7 +7,7 @@ from app.orchestrator.queue import build_queue
 from app.workers.default_registry import registry
 
 
-def run(limit=10):
+def run(limit=25):
     workbook = find_master_workbook()
 
     if workbook is None:
