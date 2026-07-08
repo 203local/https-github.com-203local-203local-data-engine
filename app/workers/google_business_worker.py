@@ -1,5 +1,5 @@
 from app.google_business.mock_provider import MockGoogleBusinessProvider
-from app.workers.base_worker import BaseWorker, WorkerResult
+from app.workers.base_worker import BaseWorker, WorkerResult, WorkerUpdate
 
 
 class GoogleBusinessWorker(BaseWorker):
@@ -28,10 +28,31 @@ class GoogleBusinessWorker(BaseWorker):
 
         data = self.provider.search(business_name, town)
 
+        updates = [
+            WorkerUpdate(
+                field="google_maps_url",
+                value=data.maps_url,
+                source=data.source,
+                confidence=0.95,
+            ),
+            WorkerUpdate(
+                field="google_rating",
+                value=data.rating,
+                source=data.source,
+                confidence=0.95,
+            ),
+            WorkerUpdate(
+                field="google_review_count",
+                value=data.review_count,
+                source=data.source,
+                confidence=0.95,
+            ),
+        ]
+
         return WorkerResult(
             worker_name=self.name,
             business_name=business_name,
-            updates=[],
-            status="skipped",
+            updates=updates,
+            status="success",
             notes=[f"Provider source: {data.source}"],
         )
