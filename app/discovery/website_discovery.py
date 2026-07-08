@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from urllib.parse import urlparse
 
+from app.discovery.scoring import score_website_candidate
 from app.search.google_custom_search import GoogleCustomSearchProvider
 
 
@@ -36,6 +37,8 @@ def discover_official_website(business_name, town, state="CT"):
     provider = GoogleCustomSearchProvider()
     results = provider.search(query, limit=5)
 
+    scored = []
+
     for result in results:
         if not result.url:
             continue
@@ -43,10 +46,22 @@ def discover_official_website(business_name, town, state="CT"):
         if is_blocked(result.url):
             continue
 
+        score = score_website_candidate(
+            result,
+            business_name,
+            town,
+        )
+
+        scored.append((score, result))
+
+    if scored:
+        scored.sort(reverse=True, key=lambda x: x[0])
+        best_score, best = scored[0]
+
         return WebsiteDiscoveryResult(
-            website=result.url,
-            confidence=0.75,
-            reason="First non-blocked search result",
+            website=best.url,
+            confidence=min(best_score / 100.0, 1.0),
+            reason=f"Highest scoring candidate ({best_score})",
         )
 
     return WebsiteDiscoveryResult(
