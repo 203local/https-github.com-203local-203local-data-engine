@@ -1,3 +1,4 @@
+import app.config.environment
 
 from app.repair_engine.pipeline import run_repair_pipeline
 from app.dashboard.profile_snapshot import run as show_profile_snapshot

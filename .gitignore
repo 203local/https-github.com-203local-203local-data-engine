@@ -20,3 +20,4 @@ credentials.json
 
 automation_state/
 queue_state/
+.env
