@@ -2,6 +2,7 @@
 from app.repair_engine.pipeline import run_repair_pipeline
 from app.dashboard.profile_snapshot import run as show_profile_snapshot
 from app.dashboard.business_health import run as show_business_health
+from app.dashboard.priority_queue import run as show_priority_queue
 from app.repair_engine.engine import run_seo_repair_workflow
 
 from app.dashboard.summary import show_summary
@@ -121,7 +122,8 @@ def menu():
         print("32. Missing Data Dashboard")
         print("33. Business Profile Snapshot")
         print("34. Business Health Dashboard")
-        print("35. Exit")
+        print("35. Priority Queue")
+        print("36. Exit")
         print()
 
         choice = input("Select an option: ").strip()
@@ -197,6 +199,8 @@ def menu():
         elif choice == "34":
             show_business_health()
         elif choice == "35":
+            show_priority_queue()
+        elif choice == "36":
             print("Goodbye.")
             break
         else:
