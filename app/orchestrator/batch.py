@@ -2,6 +2,7 @@ import pandas as pd
 
 from app.core.workbook import find_master_workbook
 from app.orchestrator.executor import execute
+from app.orchestrator.queue import build_queue
 
 
 def run(limit=25):
@@ -12,21 +13,22 @@ def run(limit=25):
         return
 
     df = pd.read_excel(workbook)
+    queue = build_queue(df)
 
-    total = min(limit, len(df))
+    total = min(limit, len(queue))
 
     print()
     print("=" * 70)
     print("203local Batch Repair Orchestrator")
     print("=" * 70)
     print(f"Workbook: {workbook}")
-    print(f"Processing first {total} businesses")
+    print(f"Processing highest priority {total} businesses")
     print("=" * 70)
 
     processed = 0
     planned_steps = 0
 
-    for index, row in df.head(limit).iterrows():
+    for index, row in queue.head(limit).iterrows():
         result = execute(row)
 
         processed += 1
