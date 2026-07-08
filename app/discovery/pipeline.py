@@ -1,3 +1,5 @@
+from urllib.parse import urlparse
+
 from app.discovery.deduplicate import deduplicate_results
 from app.discovery.scoring import score_website_candidate
 from app.discovery.search_aggregator import gather_results
@@ -6,7 +8,37 @@ from app.discovery.website_validator import fetch_homepage
 from app.search.tavily_search import TavilySearchProvider
 
 
-def discover_best_website_candidate(business_name, town):
+NON_OFFICIAL_DOMAINS = [
+    "facebook.com",
+    "instagram.com",
+    "snapchat.com",
+    "tiktok.com",
+    "yelp.com",
+    "tripadvisor.com",
+    "ubereats.com",
+    "grubhub.com",
+    "doordash.com",
+    "singleplatform.com",
+    "eventective.com",
+    "patch.com",
+    "mapquest.com",
+    "mindtrip.ai",
+    "restaurantji.com",
+    "opentable.com",
+    "seamless.com",
+    "toasttab.com",
+    "ezcater.com",
+    "foursquare.com",
+    "yellowpages.com",
+]
+
+
+def is_non_official(url):
+    domain = urlparse(url).netloc.lower()
+    return any(blocked in domain for blocked in NON_OFFICIAL_DOMAINS)
+
+
+def discover_best_website_candidate(business_name, town, minimum_score=40):
     provider = TavilySearchProvider()
 
     raw_results = gather_results(provider, business_name, town)
@@ -34,9 +66,13 @@ def discover_best_website_candidate(business_name, town):
 
     scored.sort(reverse=True, key=lambda item: item[0])
 
-    if not scored:
-        return None, 0, []
+    for score, result in scored:
+        if score < minimum_score:
+            continue
 
-    best_score, best_result = scored[0]
+        if is_non_official(result.url):
+            continue
 
-    return best_result, best_score, scored
+        return result, score, scored
+
+    return None, 0, scored
