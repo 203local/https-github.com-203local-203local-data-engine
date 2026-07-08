@@ -1,5 +1,6 @@
-from app.repair_engine.pipeline import run_repair_pipeline
 
+from app.repair_engine.pipeline import run_repair_pipeline
+from app.dashboard.profile_snapshot import run as show_profile_snapshot
 from app.repair_engine.engine import run_seo_repair_workflow
 
 from app.dashboard.summary import show_summary
@@ -117,7 +118,8 @@ def menu():
         print("30. SEO Auto-Fix")
         print("31. Full Repair Pipeline")
         print("32. Missing Data Dashboard")
-        print("33. Exit")
+        print("33. Business Profile Snapshot")
+        print("34. Exit")
         print()
 
         choice = input("Select an option: ").strip()
@@ -189,6 +191,8 @@ def menu():
         elif choice == "32":
             show_missing_data()
         elif choice == "33":
+            show_profile_snapshot()
+        elif choice == "34":
             print("Goodbye.")
             break
         else:
