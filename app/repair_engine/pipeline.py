@@ -1,4 +1,5 @@
 from app.repair_engine.website.repair import WebsiteRepair
+from app.repair_engine.google_business.repair import GoogleBusinessRepair
 
 from app.core.workbook import load_master_dataframe, save_report_workbook
 
@@ -10,6 +11,7 @@ PIPELINE = [
     SEORepair(),
     DescriptionRepair(),
     WebsiteRepair(),
+    GoogleBusinessRepair(),
 ]
 
 def run_repair_pipeline():
