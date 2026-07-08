@@ -1,7 +1,8 @@
-import re
 from urllib.request import Request, urlopen
 from urllib.error import URLError, HTTPError
+import socket
 
+from app.website.html_parser import parse_website_html
 from app.website.models import WebsiteData
 from app.website.provider import WebsiteProvider
 
@@ -15,28 +16,17 @@ class RealWebsiteProvider(WebsiteProvider):
 
         try:
             request = Request(url, headers={"User-Agent": "Mozilla/5.0"})
-            with urlopen(request, timeout=8) as response:
+            with urlopen(request, timeout=10) as response:
                 html = response.read().decode("utf-8", errors="ignore")
-        except (URLError, HTTPError, TimeoutError, ValueError):
+        except (URLError, HTTPError, TimeoutError, socket.timeout, ValueError):
             return WebsiteData(website=website)
 
-        emails = re.findall(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}", html)
-
-        facebook = self.find_social(html, "facebook.com")
-        instagram = self.find_social(html, "instagram.com")
+        parsed = parse_website_html(html, base_url=url)
 
         return WebsiteData(
             website=website,
-            email=emails[0] if emails else None,
-            facebook=facebook,
-            instagram=instagram,
+            phone=parsed.get("phone"),
+            email=parsed.get("email"),
+            facebook=parsed.get("facebook"),
+            instagram=parsed.get("instagram"),
         )
-
-    def find_social(self, html, domain):
-        pattern = rf'https?://[^"\']*{re.escape(domain)}[^"\']*'
-        matches = re.findall(pattern, html)
-
-        if not matches:
-            return None
-
-        return matches[0].split("?")[0]
