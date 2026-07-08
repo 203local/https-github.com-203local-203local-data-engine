@@ -8,6 +8,7 @@ from app.dashboard.repair_planner import run as show_repair_planner
 from app.dashboard.orchestrator_dashboard import run as show_orchestrator_dashboard
 from app.orchestrator.writeback import run as run_orchestrator_writeback_preview
 from app.merge.preview_runner import run as run_merge_preview
+from app.orchestrator.batch import run as run_batch_orchestrator
 from app.repair_engine.engine import run_seo_repair_workflow
 
 from app.dashboard.summary import show_summary
@@ -133,7 +134,8 @@ def menu():
         print("38. Repair Orchestrator Dashboard")
         print("39. Orchestrator Write-Back Preview")
         print("40. Worker Merge Preview")
-        print("41. Exit")
+        print("41. Batch Repair Orchestrator")
+        print("42. Exit")
         print()
 
         choice = input("Select an option: ").strip()
@@ -221,6 +223,8 @@ def menu():
         elif choice == "40":
             run_merge_preview()
         elif choice == "41":
+            run_batch_orchestrator()
+        elif choice == "42":
             print("Goodbye.")
             break
         else:
