@@ -5,6 +5,7 @@ from app.dashboard.business_health import run as show_business_health
 from app.dashboard.priority_queue import run as show_priority_queue
 from app.google_business.candidate_report import run as show_google_business_candidates
 from app.dashboard.repair_planner import run as show_repair_planner
+from app.dashboard.orchestrator_dashboard import run as show_orchestrator_dashboard
 from app.repair_engine.engine import run_seo_repair_workflow
 
 from app.dashboard.summary import show_summary
@@ -127,7 +128,8 @@ def menu():
         print("35. Priority Queue")
         print("36. Google Business Candidate Report")
         print("37. Repair Planner Dashboard")
-        print("38. Exit")
+        print("38. Repair Orchestrator Dashboard")
+        print("39. Exit")
         print()
 
         choice = input("Select an option: ").strip()
@@ -209,6 +211,8 @@ def menu():
         elif choice == "37":
             show_repair_planner()
         elif choice == "38":
+            show_orchestrator_dashboard()
+        elif choice == "39":
             print("Goodbye.")
             break
         else:
