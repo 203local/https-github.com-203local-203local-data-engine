@@ -33,7 +33,22 @@ NON_OFFICIAL_DOMAINS = [
 ]
 
 
+def is_valid_candidate_url(url):
+    if not url:
+        return False
+
+    parsed = urlparse(str(url).strip())
+
+    return (
+        parsed.scheme in {"http", "https"}
+        and bool(parsed.netloc)
+    )
+
+
 def is_non_official(url):
+    if not is_valid_candidate_url(url):
+        return True
+
     domain = urlparse(url).netloc.lower()
     return any(blocked in domain for blocked in NON_OFFICIAL_DOMAINS)
 
@@ -47,6 +62,9 @@ def discover_best_website_candidate(business_name, town, minimum_score=40):
     scored = []
 
     for result in unique_results:
+        if not is_valid_candidate_url(result.url):
+            continue
+
         search_score = score_website_candidate(result, business_name, town)
 
         validation = fetch_homepage(result.url)

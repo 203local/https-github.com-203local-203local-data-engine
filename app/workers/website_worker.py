@@ -30,6 +30,7 @@ class WebsiteWorker(BaseWorker):
     def run(self, row):
         business_name = self.clean_text(row.get("post_title"))
         town = self.clean_text(row.get("town"))
+        street = self.clean_text(row.get("street"))
         existing_website = self.clean_text(row.get("website"))
 
         notes = []
@@ -54,6 +55,7 @@ class WebsiteWorker(BaseWorker):
         data = self.provider.lookup(
             business_name,
             town,
+            street,
             discovered_website,
         )
 

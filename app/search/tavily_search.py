@@ -10,10 +10,17 @@ from app.search.provider import SearchProvider
 class TavilySearchProvider(SearchProvider):
     def __init__(self):
         self.api_key = os.getenv("TAVILY_API_KEY")
+        self.disabled = False
+        self.disable_reason = ""
 
     def search(self, query, limit=5):
+        if self.disabled:
+            return []
+
         if not self.api_key:
-            print("Tavily API key is not configured.")
+            self.disabled = True
+            self.disable_reason = "API key is not configured"
+            print("Tavily disabled: API key is not configured.")
             return []
 
         payload = json.dumps({
@@ -35,6 +42,16 @@ class TavilySearchProvider(SearchProvider):
                 data = json.loads(response.read().decode("utf-8"))
         except HTTPError as error:
             body = error.read().decode("utf-8", errors="ignore")
+
+            if error.code in {401, 402, 403, 429, 432}:
+                self.disabled = True
+                self.disable_reason = f"HTTP {error.code}"
+                print(
+                    f"Tavily disabled for this run after HTTP {error.code}. "
+                    "Website discovery will continue without Tavily."
+                )
+                return []
+
             print(f"Tavily HTTP error {error.code}:")
             print(body)
             return []
