@@ -1,7 +1,8 @@
+import http.client
 import re
 import socket
 from urllib.error import HTTPError, URLError
-from urllib.parse import urlparse
+from urllib.parse import quote, urlparse, urlsplit, urlunsplit
 from urllib.request import Request, urlopen
 
 from app.website.html_parser import parse_website_html
@@ -21,10 +22,50 @@ class RealWebsiteProvider(WebsiteProvider):
         "instagram",
     }
 
+    @staticmethod
+    def normalize_url(url):
+        if not url:
+            return ""
+
+        try:
+            parts = urlsplit(str(url).strip())
+
+            if parts.scheme not in {"http", "https"}:
+                return ""
+
+            if not parts.netloc:
+                return ""
+
+            safe_path = quote(
+                parts.path,
+                safe="/:@-._~!$&'()*+,;=%",
+            )
+            safe_query = quote(
+                parts.query,
+                safe="=&:@/?-._~!$'()*+,;%",
+            )
+
+            return urlunsplit(
+                (
+                    parts.scheme,
+                    parts.netloc,
+                    safe_path,
+                    safe_query,
+                    "",
+                )
+            )
+        except (TypeError, ValueError):
+            return ""
+
     def fetch_html(self, url):
+        normalized_url = self.normalize_url(url)
+
+        if not normalized_url:
+            return ""
+
         try:
             request = Request(
-                url,
+                normalized_url,
                 headers={"User-Agent": "Mozilla/5.0"},
             )
 
@@ -40,6 +81,11 @@ class RealWebsiteProvider(WebsiteProvider):
             TimeoutError,
             socket.timeout,
             ValueError,
+            http.client.InvalidURL,
+            http.client.IncompleteRead,
+            ConnectionResetError,
+            ConnectionAbortedError,
+            BrokenPipeError,
         ):
             return ""
 
