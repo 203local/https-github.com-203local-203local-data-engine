@@ -8,6 +8,9 @@ from app.discovery.website_validator import fetch_homepage
 from app.search.tavily_search import TavilySearchProvider
 
 
+TAVILY_PROVIDER = TavilySearchProvider()
+
+
 NON_OFFICIAL_DOMAINS = [
     "facebook.com",
     "instagram.com",
@@ -54,9 +57,11 @@ def is_non_official(url):
 
 
 def discover_best_website_candidate(business_name, town, minimum_score=40):
-    provider = TavilySearchProvider()
-
-    raw_results = gather_results(provider, business_name, town)
+    raw_results = gather_results(
+        TAVILY_PROVIDER,
+        business_name,
+        town,
+    )
     unique_results = deduplicate_results(raw_results)
 
     scored = []
