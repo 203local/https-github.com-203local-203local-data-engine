@@ -197,6 +197,13 @@ class RealWebsiteProvider(WebsiteProvider):
                     ):
                         continue
 
+                if key == "facebook":
+                    if town and not self.text_mentions_town(
+                        value,
+                        town,
+                    ):
+                        continue
+
                 parsed[key] = value
                 continue
 
@@ -232,6 +239,7 @@ class RealWebsiteProvider(WebsiteProvider):
         homepage_data = parse_website_html(
             homepage_html,
             base_url=url,
+            preferred_location=town,
         )
 
         parsed = {}
@@ -259,6 +267,7 @@ class RealWebsiteProvider(WebsiteProvider):
             page_data = parse_website_html(
                 page_html,
                 base_url=page_url,
+                preferred_location=town,
             )
 
             self.merge_page_data(

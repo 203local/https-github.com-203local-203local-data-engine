@@ -25,15 +25,47 @@ def extract_phone_numbers(html):
     return sorted(set(re.findall(pattern, html or "")))
 
 
-def extract_social_links(html):
+def extract_social_links(html, preferred_location=""):
     links = {}
+    normalized_location = re.sub(
+        r"[^a-z0-9]",
+        "",
+        str(preferred_location).casefold(),
+    )
 
     for name, domain in SOCIAL_DOMAINS.items():
         pattern = rf'https?://[^"\']*{re.escape(domain)}[^"\']*'
         matches = re.findall(pattern, html or "")
 
-        if matches:
-            links[name] = matches[0].split("?")[0]
+        cleaned_matches = list(dict.fromkeys(
+            match.split("?")[0].rstrip("\\/")
+            for match in matches
+            if match
+        ))
+
+        if not cleaned_matches:
+            continue
+
+        if name == "facebook" and normalized_location:
+            location_match = next(
+                (
+                    candidate
+                    for candidate in cleaned_matches
+                    if normalized_location
+                    in re.sub(
+                        r"[^a-z0-9]",
+                        "",
+                        candidate.casefold(),
+                    )
+                ),
+                None,
+            )
+
+            if location_match:
+                links[name] = location_match
+                continue
+
+        links[name] = cleaned_matches[0]
 
     return links
 
@@ -48,12 +80,19 @@ def extract_tel_links(html):
     return sorted(set(re.findall(pattern, html or "")))
 
 
-def parse_website_html(html, base_url=""):
+def parse_website_html(
+    html,
+    base_url="",
+    preferred_location="",
+):
     emails = extract_emails(html)
     mailto_emails = extract_mailto_links(html)
     phones = extract_phone_numbers(html)
     tel_numbers = extract_tel_links(html)
-    socials = extract_social_links(html)
+    socials = extract_social_links(
+        html,
+        preferred_location=preferred_location,
+    )
 
     return {
         "email": mailto_emails[0] if mailto_emails else (emails[0] if emails else None),
