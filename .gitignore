@@ -1,3 +1,15 @@
+# Generated enrichment data
+enrichment/
+
+# Generated reports
+reports/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# macOS files
+.DS_Store
 master/
 backups/
 exports/
