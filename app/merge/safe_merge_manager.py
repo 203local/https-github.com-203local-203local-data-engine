@@ -394,7 +394,7 @@ def build_proposed_changes(
                 business_id,
                 business_name,
                 "online_presence_type",
-                "None",
+                "No Online Presence",
                 "Digital Presence Review",
                 "High",
             )
