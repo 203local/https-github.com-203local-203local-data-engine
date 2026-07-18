@@ -328,23 +328,25 @@ def build_proposed_changes(
             )
 
         elif status == "social only":
-            primary_presence = clean(
-                research_row.get(
-                    "discovered_primary_online_presence"
-                )
+            instagram = clean(
+                research_row.get("instagram")
             )
 
-            presence_type = clean(
-                research_row.get(
-                    "discovered_online_presence_type"
-                )
+            facebook = clean(
+                research_row.get("facebook")
             )
 
-            website_status = clean(
-                research_row.get(
-                    "discovered_website_status"
-                )
-            )
+            if instagram:
+                primary_presence = instagram
+                presence_type = "Instagram"
+            elif facebook:
+                primary_presence = facebook
+                presence_type = "Facebook"
+            else:
+                primary_presence = ""
+                presence_type = ""
+
+            website_status = "Social Only"
 
             add_proposed_change(
                 proposed,
