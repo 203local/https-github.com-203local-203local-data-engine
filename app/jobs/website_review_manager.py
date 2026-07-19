@@ -1,3 +1,7 @@
+from app.core.url_classifier import classify_url
+
+from app.core.url_classifier import classify_url
+
 from pathlib import Path
 from urllib.parse import quote_plus, urlparse
 import webbrowser
@@ -5,7 +9,7 @@ import webbrowser
 from app.core.url_classifier import classify
 
 import pandas as pd
-
+from app.core.url_classifier import classify_url
 
 DEFAULT_BATCH = Path(
     "enrichment/missing_website_batches/"
@@ -249,21 +253,58 @@ def review_batch(batch_path=DEFAULT_BATCH):
                     "Official website URL: "
                 ).strip()
 
+                classification = classify_url(website)
+
+                print()
+                print("=" * 60)
+                print("URL Classification")
+                print("=" * 60)
+                print(
+                    f"Category:   "
+                    f"{classification.category}"
+                )
+                print(
+                    f"Provider:   "
+                    f"{classification.provider}"
+                )
+                print(
+                    f"Confidence: "
+                    f"{classification.confidence}"
+                )
+
+                if classification.warning:
+                    print()
+                    print("WARNING")
+                    print(classification.warning)
+
+                if classification.category != "official":
+                    print()
+                    print(
+                        "This URL cannot be saved as an "
+                        "official website."
+                    )
+                    print(
+                        f"Detected as: "
+                        f"{classification.category}"
+                    )
+
+                    if classification.provider:
+                        print(
+                            f"Provider: "
+                            f"{classification.provider}"
+                        )
+
+                    print()
+                    print(
+                        "Use the appropriate social-presence "
+                        "option or continue researching."
+                    )
+                    continue
+
                 if not valid_url(website):
                     print(
                         "Invalid URL. Include "
                         "http:// or https://"
-                    )
-                    continue
-
-                if is_social_url(website):
-                    print()
-                    print(
-                        "That is a social-profile URL, "
-                        "not an official website."
-                    )
-                    print(
-                        "Use option 6 or 7 instead."
                     )
                     continue
 
@@ -280,40 +321,35 @@ def review_batch(batch_path=DEFAULT_BATCH):
                     "Notes (optional): "
                 ).strip()
 
-                df.at[index, "research_status"] = "Approved"
+                df.at[
+                    index,
+                    "research_status",
+                ] = "Approved"
+
                 df.at[
                     index,
                     "discovered_website",
-                ] = website
+                ] = classification.canonical_url
+
                 df.at[
                     index,
                     "website_source",
-                ] = source or "Manual verification"
+                ] = source
+
                 df.at[
                     index,
                     "website_confidence",
-                ] = confidence or "High"
+                ] = confidence
+
                 df.at[
                     index,
                     "research_notes",
                 ] = notes
-                df.at[
-                    index,
-                    "discovered_primary_online_presence",
-                ] = website
-                df.at[
-                    index,
-                    "discovered_online_presence_type",
-                ] = "Website"
-                df.at[
-                    index,
-                    "discovered_website_status",
-                ] = "Verified Official Website"
 
-                save_batch(df, batch_path)
-
-                print("Official website approved and saved.")
-                break
+                print(
+                    "Official website approved and saved."
+                )
+                continue
 
             if choice == "2":
                 facebook = clean(row.get("facebook"))

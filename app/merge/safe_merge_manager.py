@@ -327,7 +327,12 @@ def build_proposed_changes(
                 confidence,
             )
 
-        elif status == "social only":
+        elif status in {
+            "social only",
+            "facebook primary",
+            "instagram primary",
+            "no website found",
+        }:
             instagram = clean(
                 research_row.get("instagram")
             )
@@ -336,12 +341,22 @@ def build_proposed_changes(
                 research_row.get("facebook")
             )
 
-            if instagram:
+            if status == "facebook primary":
+                primary_presence = facebook
+                presence_type = "Facebook"
+
+            elif status == "instagram primary":
                 primary_presence = instagram
                 presence_type = "Instagram"
+
+            elif instagram:
+                primary_presence = instagram
+                presence_type = "Instagram"
+
             elif facebook:
                 primary_presence = facebook
                 presence_type = "Facebook"
+
             else:
                 primary_presence = ""
                 presence_type = ""
@@ -387,7 +402,10 @@ def build_proposed_changes(
                 "High",
             )
 
-        elif status == "no online presence":
+        elif status in {
+            "no online presence",
+            "none found",
+        }:
             add_proposed_change(
                 proposed,
                 rejected,
@@ -412,6 +430,26 @@ def build_proposed_changes(
                 "No Online Presence",
                 "Digital Presence Review",
                 "High",
+            )
+
+        elif status in {
+            "needs further research",
+            "research needed",
+            "pending",
+            "",
+        }:
+            continue
+
+        else:
+            rejected.append(
+                {
+                    "business_id": business_id,
+                    "field": "research_status",
+                    "reason": (
+                        "unrecognized research status: "
+                        f"{status}"
+                    ),
+                }
             )
 
     return proposed, rejected
