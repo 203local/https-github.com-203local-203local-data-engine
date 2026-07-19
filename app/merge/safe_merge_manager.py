@@ -35,6 +35,11 @@ NON_OFFICIAL_DOMAINS = {
     "doordash.com",
     "grubhub.com",
     "ubereats.com",
+    "twupro.com",
+    "restaurantguru.com",
+    "allmenus.com",
+    "menupix.com",
+    "usarestaurants.info",
 }
 
 
@@ -341,6 +346,14 @@ def build_proposed_changes(
                 research_row.get("facebook")
             )
 
+            existing_primary = clean(
+                master_row.get("primary_online_presence")
+            )
+
+            existing_type = clean(
+                master_row.get("online_presence_type")
+            )
+
             if status == "facebook primary":
                 primary_presence = facebook
                 presence_type = "Facebook"
@@ -348,6 +361,14 @@ def build_proposed_changes(
             elif status == "instagram primary":
                 primary_presence = instagram
                 presence_type = "Instagram"
+
+            elif (
+                status in {"social only", "no website found"}
+                and existing_primary
+                and existing_type in {"Facebook", "Instagram"}
+            ):
+                primary_presence = existing_primary
+                presence_type = existing_type
 
             elif instagram:
                 primary_presence = instagram
@@ -361,7 +382,21 @@ def build_proposed_changes(
                 primary_presence = ""
                 presence_type = ""
 
-            website_status = "Social Only"
+            existing_website_status = clean(
+                master_row.get("website_status")
+            )
+
+            if (
+                status in {"social only", "no website found"}
+                and existing_website_status
+            ):
+                website_status = existing_website_status
+            elif presence_type == "Facebook":
+                website_status = "Facebook Only"
+            elif presence_type == "Instagram":
+                website_status = "Instagram Only"
+            else:
+                website_status = "Social Only"
 
             add_proposed_change(
                 proposed,
