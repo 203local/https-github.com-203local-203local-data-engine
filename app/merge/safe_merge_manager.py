@@ -560,7 +560,8 @@ def merge_research_batch(
     master_df = pd.read_excel(
         MASTER_FILE,
         sheet_name=sheet_name,
-    )
+        dtype=str,
+    ).fillna("")
 
     batch_df = pd.read_csv(
         batch_path,

@@ -1,15 +1,12 @@
 from app.core.url_classifier import classify_url
 
-from app.core.url_classifier import classify_url
 
 from pathlib import Path
 from urllib.parse import quote_plus, urlparse
 import webbrowser
 
-from app.core.url_classifier import classify
 
 import pandas as pd
-from app.core.url_classifier import classify_url
 
 DEFAULT_BATCH = Path(
     "enrichment/missing_website_batches/"
