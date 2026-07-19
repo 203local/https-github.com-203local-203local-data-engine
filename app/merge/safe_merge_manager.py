@@ -251,6 +251,41 @@ def build_proposed_changes(
             )
         ) or "High"
 
+        completed_statuses = {
+            "approved",
+            "ready for merge",
+            "verified",
+            "social only",
+            "facebook primary",
+            "instagram primary",
+            "no website found",
+            "no online presence",
+            "none found",
+        }
+
+        if status in completed_statuses:
+            for social_field in (
+                "facebook",
+                "instagram",
+            ):
+                social_url = clean(
+                    research_row.get(social_field)
+                )
+
+                if social_url:
+                    add_proposed_change(
+                        proposed,
+                        rejected,
+                        master_row,
+                        master_index,
+                        business_id,
+                        business_name,
+                        social_field,
+                        social_url,
+                        source,
+                        confidence,
+                    )
+
         if status in {
             "approved",
             "ready for merge",

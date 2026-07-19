@@ -140,6 +140,106 @@ def show_business(row, position, total):
     print()
 
 
+
+def is_platform_url(value, platform):
+    value = clean(value)
+
+    if not value:
+        return True
+
+    if not valid_url(value):
+        return False
+
+    try:
+        hostname = (
+            urlparse(value)
+            .netloc
+            .lower()
+            .split(":")[0]
+        )
+    except ValueError:
+        return False
+
+    domains = {
+        "Facebook": {
+            "facebook.com",
+            "www.facebook.com",
+            "m.facebook.com",
+        },
+        "Instagram": {
+            "instagram.com",
+            "www.instagram.com",
+        },
+    }
+
+    return any(
+        hostname == domain
+        or hostname.endswith("." + domain)
+        for domain in domains[platform]
+    )
+
+
+def ask_optional_social_url(
+    df,
+    index,
+    platform,
+):
+    column = platform.casefold()
+    existing = clean(df.at[index, column])
+
+    if existing:
+        print(
+            f"{platform} already saved: {existing}"
+        )
+        return existing
+
+    while True:
+        value = input(
+            f"{platform} URL "
+            "(optional — press Enter if unavailable): "
+        ).strip()
+
+        if not value:
+            return ""
+
+        if not is_platform_url(value, platform):
+            print(
+                f"That does not appear to be a valid "
+                f"{platform} URL."
+            )
+            print(
+                "Please include https://, or press Enter "
+                "to leave it blank."
+            )
+            continue
+
+        df.at[index, column] = value
+
+        print(f"Saved optional {platform} URL.")
+        return value
+
+
+def collect_optional_social_links(
+    df,
+    index,
+):
+    print()
+    print("Optional social links")
+    print("-" * 40)
+
+    ask_optional_social_url(
+        df,
+        index,
+        "Facebook",
+    )
+
+    ask_optional_social_url(
+        df,
+        index,
+        "Instagram",
+    )
+
+
 def set_social_only(
     df,
     index,
@@ -347,6 +447,13 @@ def review_batch(batch_path=DEFAULT_BATCH):
                     "research_notes",
                 ] = notes
 
+                collect_optional_social_links(
+                    df,
+                    index,
+                )
+
+                save_batch(df, batch_path)
+
                 save_batch(df, batch_path)
 
                 print(
@@ -432,6 +539,11 @@ def review_batch(batch_path=DEFAULT_BATCH):
                     "Facebook",
                 )
 
+                collect_optional_social_links(
+                    df,
+                    index,
+                )
+
                 save_batch(df, batch_path)
 
                 print(
@@ -452,6 +564,11 @@ def review_batch(batch_path=DEFAULT_BATCH):
                     index,
                     instagram,
                     "Instagram",
+                )
+
+                collect_optional_social_links(
+                    df,
+                    index,
                 )
 
                 save_batch(df, batch_path)
