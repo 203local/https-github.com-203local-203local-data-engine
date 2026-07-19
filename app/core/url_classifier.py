@@ -1,5 +1,187 @@
 from urllib.parse import urlparse
 
+OFFICIAL_BLOCKLIST = {
+    "singleplatform.com",
+    "places.singleplatform.com",
+    "mappway.com",
+    "twupro.com",
+    "restaurantji.com",
+    "allmenus.com",
+    "menupix.com",
+    "sirved.com",
+    "yelp.com",
+    "tripadvisor.com",
+    "yellowpages.com",
+    "mapquest.com",
+}
+
+SOCIAL_DOMAINS = {
+    "facebook.com",
+    "instagram.com",
+    "tiktok.com",
+    "linkedin.com",
+    "x.com",
+}
+
+ORDERING_DOMAINS = {
+    "toasttab.com",
+    "order.toasttab.com",
+    "slice.com",
+    "clover.com",
+    "chownow.com",
+    "ubereats.com",
+    "doordash.com",
+    "grubhub.com",
+}
+
+def normalize(url):
+    if not url:
+        return ""
+
+    if "://" not in url:
+        url = "https://" + url
+
+    domain = urlparse(url).netloc.lower()
+
+    if domain.startswith("www."):
+        domain = domain[4:]
+
+    return domain
+
+def classify(url):
+    domain = normalize(url)
+
+    for blocked in OFFICIAL_BLOCKLIST:
+        if domain.endswith(blocked):
+            return "directory"
+
+    for social in SOCIAL_DOMAINS:
+        if domain.endswith(social):
+            return "social"
+
+    for ordering in ORDERING_DOMAINS:
+        if domain.endswith(ordering):
+            return "ordering"
+
+    return "official"
+from urllib.parse import urlparse
+
+
+SOCIAL_DOMAINS = {
+    "facebook.com",
+    "instagram.com",
+    "tiktok.com",
+    "linkedin.com",
+    "x.com",
+    "twitter.com",
+}
+
+ORDERING_DOMAINS = {
+    "toasttab.com",
+    "order.toasttab.com",
+    "clover.com",
+    "chownow.com",
+    "slice.com",
+    "doordash.com",
+    "ubereats.com",
+    "grubhub.com",
+    "seamless.com",
+}
+
+DIRECTORY_DOMAINS = {
+    "yelp.com",
+    "tripadvisor.com",
+    "singleplatform.com",
+    "places.singleplatform.com",
+    "mappway.com",
+    "twupro.com",
+    "mapquest.com",
+    "yellowpages.com",
+    "restaurantji.com",
+    "menupix.com",
+    "allmenus.com",
+    "sirved.com",
+    "loc8nearme.com",
+}
+
+SEARCH_DOMAINS = {
+    "google.com",
+    "googleusercontent.com",
+    "bing.com",
+}
+
+
+def normalize_domain(url):
+    if not url:
+        return ""
+
+    value = str(url).strip().lower()
+
+    if not value:
+        return ""
+
+    if "://" not in value:
+        value = f"https://{value}"
+
+    try:
+        domain = urlparse(value).netloc.lower()
+    except ValueError:
+        return ""
+
+    if domain.startswith("www."):
+        domain = domain[4:]
+
+    return domain
+
+
+def domain_matches(domain, known_domains):
+    return any(
+        domain == known
+        or domain.endswith(f".{known}")
+        for known in known_domains
+    )
+
+
+def classify_url(url):
+    domain = normalize_domain(url)
+
+    if not domain:
+        return {
+            "valid": False,
+            "classification": "Invalid URL",
+            "domain": "",
+            "can_be_official_website": False,
+        }
+
+    if domain_matches(domain, SOCIAL_DOMAINS):
+        classification = "Social Profile"
+        can_be_official = False
+
+    elif domain_matches(domain, ORDERING_DOMAINS):
+        classification = "Ordering Platform"
+        can_be_official = False
+
+    elif domain_matches(domain, DIRECTORY_DOMAINS):
+        classification = "Directory Listing"
+        can_be_official = False
+
+    elif domain_matches(domain, SEARCH_DOMAINS):
+        classification = "Search Result"
+        can_be_official = False
+
+    else:
+        classification = "Possible Official Website"
+        can_be_official = True
+
+    return {
+        "valid": True,
+        "classification": classification,
+        "domain": domain,
+        "can_be_official_website": can_be_official,
+    }
+
+from urllib.parse import urlparse
+
 
 SOCIAL_DOMAINS = {
     "facebook.com": "facebook",

@@ -2,6 +2,8 @@ from pathlib import Path
 from urllib.parse import quote_plus, urlparse
 import webbrowser
 
+from app.core.url_classifier import classify
+
 import pandas as pd
 
 
