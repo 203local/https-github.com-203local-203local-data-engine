@@ -1,12 +1,12 @@
 from app.core.url_classifier import classify_url
 
-
 from pathlib import Path
 from urllib.parse import quote_plus, urlparse
+import sys
 import webbrowser
 
-
 import pandas as pd
+
 
 DEFAULT_BATCH = Path(
     "enrichment/missing_website_batches/"
@@ -150,18 +150,22 @@ def set_social_only(
     df.at[index, "discovered_website"] = ""
     df.at[index, "website_source"] = ""
     df.at[index, "website_confidence"] = ""
+
     df.at[
         index,
         "discovered_primary_online_presence",
     ] = url
+
     df.at[
         index,
         "discovered_online_presence_type",
     ] = presence_type
+
     df.at[
         index,
         "discovered_website_status",
     ] = f"{presence_type} Only"
+
     df.at[
         index,
         "research_notes",
@@ -343,10 +347,12 @@ def review_batch(batch_path=DEFAULT_BATCH):
                     "research_notes",
                 ] = notes
 
+                save_batch(df, batch_path)
+
                 print(
                     "Official website approved and saved."
                 )
-                continue
+                break
 
             if choice == "2":
                 facebook = clean(row.get("facebook"))
@@ -465,22 +471,27 @@ def review_batch(batch_path=DEFAULT_BATCH):
                     index,
                     "research_status",
                 ] = "No Online Presence"
+
                 df.at[
                     index,
                     "discovered_website",
                 ] = ""
+
                 df.at[
                     index,
                     "discovered_primary_online_presence",
                 ] = ""
+
                 df.at[
                     index,
                     "discovered_online_presence_type",
                 ] = "None"
+
                 df.at[
                     index,
                     "discovered_website_status",
                 ] = "No Online Presence"
+
                 df.at[
                     index,
                     "research_notes",
@@ -500,6 +511,7 @@ def review_batch(batch_path=DEFAULT_BATCH):
                     index,
                     "research_status",
                 ] = "Needs Further Research"
+
                 df.at[
                     index,
                     "research_notes",
@@ -540,4 +552,7 @@ def review_batch(batch_path=DEFAULT_BATCH):
 
 
 if __name__ == "__main__":
-    review_batch()
+    if len(sys.argv) > 1:
+        review_batch(sys.argv[1])
+    else:
+        review_batch()
